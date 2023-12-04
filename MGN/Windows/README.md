@@ -5,7 +5,7 @@ The **MGN-Toolkit** is a set of PowerShell scripts developed to run multiple che
 ## Sample Output
 
 ```powershell
-PS C:\Users\Administrator\desktop\MGN-toolkit\Windows> Import-Module .\MGN-Toolkit.psd1;invoke-mgntoolkit -SpeedTestIP 107.22.91.96 -WriteOpsTimer 30
+PS C:\Users\Administrator\desktop\MGN-toolkit\Windows> Import-Module .\MGN-Toolkit.psd1;invoke-mgntoolkit -SpeedTestIP 1.1.1.1 -WriteOpsTimer 30
 Checking prerequisites before executing the MGN Toolkit...
 [2023-10-26T08:56:34.2798000-04:00] [INFO] Code is running as administrator...
 [2023-10-26T08:56:34.2954000-04:00] [INFO] Server Version 6.1.7601 is compatible with this module...
@@ -24,7 +24,7 @@ Please follow the following documentation to create the Speed Test instance befo
 Check                         Value         Action
 -----                         -----         ------
 AD Domain Controller          [GREEN]         No action required. The Active directory role can not be found.
-Antivirus                     [GREEN]         No action required. No antivirus can be found or enabled.
+Antivirus                     [Yellow]        We are unable to identify an Anti-virus software. If there is one installed, make sure the security software is allowing access to the MGN required endpoints and add the replication agent directory [64-bit - C:\Program Files(x86)\AWS Replication Agent][32-bit - C:\Program Files\AWS Replication Agent] to the allow-list.
 BitLocker                     [GREEN]         No action required. BitLocker is not available on this system.
 Boot Mode                     [YELLOW]        The Boot Disk is Basic, and the Boot Mode is Legacy BIOS. Select the Legacy BIOS option for Boot Mode during Target Launch - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html
 Root Disk Free Space          [GREEN]         No action required. There is 102.278 GB free space on C drive.
