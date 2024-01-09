@@ -138,7 +138,7 @@ function Invoke-MGNToolkit {
 		(Get-AntivirusEnabled) | Out-Null
 		(Get-BitLockerStatus) | Out-Null
 		(Get-BootMode) | Out-Null
-		(Get-RootDiskSpace) | Out-Null
+		(Get-BootDiskSpace) | Out-Null
 		(Get-Authenticationmethod) | Out-Null
 		(Get-DotNETFramework) | Out-Null
 		(Get-FreeRAM) | Out-Null

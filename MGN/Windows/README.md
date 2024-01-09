@@ -27,7 +27,7 @@ AD Domain Controller          [GREEN]         No action required. The Active dir
 Antivirus                     [Yellow]        We are unable to identify an Anti-virus software. If there is one installed, make sure the security software is allowing access to the MGN required endpoints and add the replication agent directory [64-bit - C:\Program Files(x86)\AWS Replication Agent][32-bit - C:\Program Files\AWS Replication Agent] to the allow-list.
 BitLocker                     [GREEN]         No action required. BitLocker is not available on this system.
 Boot Mode                     [YELLOW]        The Boot Disk is Basic, and the Boot Mode is Legacy BIOS. Select the Legacy BIOS option for Boot Mode during Target Launch - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html
-Root Disk Free Space          [GREEN]         No action required. There is 102.278 GB free space on C drive.
+Boot Disk Free Space          [GREEN]         No action required. There is 102.278 GB free space on C drive.
 Authentication method         [YELLOW]        This host is not part of a domain. If the current user is part of the Administrators group, you can use it to RDP to server after migration.
 .NET Framework Version        [GREEN]         No action required. .NET Framework 4.8.03761 is installed
 Free RAM                      [GREEN]         No action required. The system has 2166 MB of RAM free RAM
@@ -158,7 +158,7 @@ Disk Write Activity Maximum   [YELLOW]        The Max for Disk Write Activity wa
 | Antivirus | Check if an Anti-Virus software is installed. This check will recommend allow listing MGN specific directories. When migrating with MGN, we install software and make changes so the machine can run natively on AWS, which Anti-Virus software can sometimes block. [64-bit - C:\Program Files(x86)\AWS Replication Agent] [32-bit - C:\Program Files\AWS Replication Agent]. **Please note, due to all the possible third-party software, this may not be able to detect ALL Antivirus's**. | Check-AntivirusEnabled | NA
 | BitLocker | Check if BitLocker is enabled. [BitLocker is not supported](https://docs.aws.amazon.com/mgn/latest/ug/FAQ.html#does-mgn-bitlocker) when using MGN. | Get-BitLockerStatus | NA
 | Boot Mode | Checks if the root disk is Dynamic/Basic and GPT/MBR to ensure you pick [the necessary Boot Mode](https://docs.aws.amazon.com/mgn/latest/ug/boot-mode.html) based on the results. | Get-BootMode | NA
-|Root Disk Free Space  | Check if there is at least 2GB of free space on the root volume. The space will be used for driver installation and other AWS software (EC2launch, SSMAgent, etc.) during migration | Get-RootDiskSpace | NA
+| Boot Disk Free Space  | Check if there is at least 2GB of free space on the boot volume. The space will be used for driver installation and other AWS software (EC2launch, SSMAgent, etc.) during migration | Get-BootDiskSpace | NA
 | Authentication method | Check whether the host is part of a domain or not. The check will help with determined the authentication method needed post migration | Get-Authenticationmethod | ProductType
 | .NET Framework Versions | Checks what the .NET Framework Version is to ensure the required version is installed for the AWS Replication Agent installation | Get-DotNetFrameworkVersion | NA
 | Free RAM | Checks to ensure there is at least [300 MB of free RAM to run the AWS Replication Agent](https://docs.aws.amazon.com/mgn/latest/ug/installation-requirements.html#general-requirements2)  | Get-FreeRAM | NA
