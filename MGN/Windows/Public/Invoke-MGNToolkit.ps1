@@ -146,6 +146,7 @@ function Invoke-MGNToolkit {
 		(Get-SCandNET) | Out-Null
 		(Get-WMIServiceStatus) | Out-Null
 		(Get-ProxySetting) | Out-Null
+		(Get-NetworkInterfaceandIPCount) | Out-Null
 		(Test-EndpointsNetworkAccess -region $Region -mgnVpceId $MgnVpceId -s3VpceId $S3VpceId) | Out-Null
 		if ($SpeedTestIP) {
 			Write-Output "Please follow the following documentation to create the Speed Test instance before proceeding with the Bandwidth Test: https://docs.aws.amazon.com/mgn/latest/ug/Replication-Related-FAQ.html#perform-connectivity-bandwidth-test"

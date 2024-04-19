@@ -32,20 +32,22 @@
     # Functions to export from this module
     FunctionsToExport = @(
         "Invoke-MGNToolkit",
+        "Get-DomainControllerStatus",
         "Get-AntivirusEnabled",
-        "Get-Bandwidth",
         "Get-BitLockerStatus",
         "Get-BootMode",
-        "Get-DiskActivity"
-        "Get-DomainControllerStatus",
+        "Get-BootDiskSpace",
+        "Get-Authenticationmethod",
         "Get-DotNETFramework",
         "Get-FreeRAM",
-        "Get-ProxySetting",
-        "Get-RootDiskSpace",
-        "Get-SCandNET",
         "Get-TrustedRootCertificate",
+        "Get-SCandNET",
         "Get-WMIServiceStatus",
-        "Test-EndpointsNetworkAccess"
+        "Get-ProxySetting",
+        "Get-NetworkInterfaceandIPCount",
+        "Test-EndpointsNetworkAccess",
+        "Get-Bandwidth",
+        "Get-DiskActivity"
     )
 
     # Cmdlets to export from this module (leave empty if none)
