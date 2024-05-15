@@ -31,7 +31,7 @@ Function Get-ProxySetting {
       Write-Log -Message "The check ""$check"" output is $value"
       $Action = "No action required. There is no proxy settings configured."
       Write-Log -Message $Action
-      $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+      $prerequisiteOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
     }
   }
   else {
@@ -40,6 +40,6 @@ Function Get-ProxySetting {
     Write-Log -Message "The check ""$check"" output is $value"
     $Action = "No action required. Skipped."
     Write-Log -Message $Action
-    $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+    $prerequisiteOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
   }
 }

@@ -64,5 +64,5 @@ Function Get-DomainControllerStatus {
     $Action = "No action required. The Active directory role can not be found."
     Write-Log -Message $Action
   }
-  $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+  $postMigrationOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
 }

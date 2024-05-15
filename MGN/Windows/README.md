@@ -61,15 +61,14 @@ Disk Write Activity Maximum   [YELLOW]        The Max for Disk Write Activity wa
     - `WriteOpsTimer` : `Optional`. The number of seconds to calculate IOPS. By default `WriteOpsTimer` is 20 seconds.
     - `MgnVpceId`: `Optional`. If you are using a VPC Endpoint for MGN, you can specify the Endpoint ID + Suffix for the Endpoint connectivity test. Please enter the VPC Endpoint Id and suffix from the DNS names.
     - `S3VpceId`: `Optional`. If you are using a VPC Endpoint for S3, you can specify the Endpoint ID + Suffix for the Endpoint connectivity test. Please enter the VPC Endpoint Id and suffix from the DNS names.
-    - `List`: `Optional`. The output will be generated using the [Format-List](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-list?view=powershell-7.3) method. By default the module will use [Format-Table](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-table?view=powershell-7.3).
-    - `GridView` : `Optional`. The output will be generated using the [Out-GridView](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-gridview?view=powershell-7.3) method. By default the module will use [Format-Table](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-table?view=powershell-7.3).
+    - `ChecksType`: `Optional`. Prerequisite or PostMigration or Replication. By default the module will run all checks.
 
     ##### Examples with switches added
     ```powershell
     Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region>
     Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -MgnVpceId <vpce-id>-<suffix> -S3VpceId <vpce-id>-<suffix>
-    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -SpeedTestIP <IP-Address> -List
-    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -WriteOpsTimer <Seconds> -GridView
+    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -SpeedTestIP <IP-Address> -ChecksType Replication
+    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -WriteOpsTimer <Seconds>
     Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -region <region> -SpeedTestIP <IP-Address> -WriteOpsTimer <Seconds>
 
     ```
@@ -77,8 +76,6 @@ Disk Write Activity Maximum   [YELLOW]        The Max for Disk Write Activity wa
     ##### All checks in `us-east-2` region
     ```powershell
     Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -SpeedTestIP 1.1.1.1 -WriteOpsTimer 20 -region us-east-2
-    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -SpeedTestIP 1.1.1.1 -WriteOpsTimer 20 -region us-east-2 -List
-    Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -SpeedTestIP 1.1.1.1 -WriteOpsTimer 20 -region us-east-2 -GridView
     Import-Module .\MGN-Toolkit.psm1;Invoke-MGNToolkit -SpeedTestIP 1.1.1.1 -WriteOpsTimer 20 -region us-east-2 -MgnVpceId vpce-12345678910111213-abcd1234 -S3VpceId vpce-12345678910111213-abcd1234
     ```
 

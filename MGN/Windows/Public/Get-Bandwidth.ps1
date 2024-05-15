@@ -63,5 +63,5 @@ Function Get-Bandwidth {
     $value = "[RED]"
     Write-Log -Message "The check ""$check"" output is $value" -LogLevel "ERROR"
   }
-  $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+  $replicationOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
 }

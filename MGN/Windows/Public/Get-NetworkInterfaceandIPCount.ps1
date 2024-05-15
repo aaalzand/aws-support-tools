@@ -68,5 +68,5 @@ Function Get-NetworkInterfaceandIPCount {
     $value = "[RED]"
     Write-Log -Message "The check ""$check"" output is $value" -LogLevel "ERROR"
   }
-  $Output.Add((New-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+  $postMigrationOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
 }

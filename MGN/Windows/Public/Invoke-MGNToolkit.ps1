@@ -2,29 +2,33 @@
 .SYNOPSIS
     Run multiple checks for common tasks to help troubleshoot MGN issues.
 .DESCRIPTION
-    This is tha main function to go through checks related to MGN issues. Each check will be on a separate function. For more information visit - https://github.com/TBD
+    This is tha main function to go through checks related to MGN issues. Each check will be on a separate function. For more information visit - https://github.com/awslabs/aws-support-tools/tree/master/MGN/Windows
 .EXAMPLE
 	PS C:\> Invoke-MGNToolkit
-  	PS C:\> Invoke-MGNToolkit -GridView
-	PS C:\> Invoke-MGNToolkit -List
 .INPUTS
 	Region = Optional. Used to specify the desired region. By default the module will run in us-east-1.
 	SpeedTestIP = Optional. The Ipaddress of the speed test server. by default Get-Bandwidth is not invoked.
-	WriteOpsTimer = Optional. The number of seconds to calculate IOPS. by default Get-DiskActivity is not invoked.
-	List = Optional. The output will be generated using the Format-List method. By default the module will use Format-Table.
-	GridView = Optional. The output will be generated using the Out-GridView for the output. By default the module will use Format-Table.
+	WriteOpsTimer = Optional. The number of seconds to calculate IOPS. By default WriteOpsTimer is 20 seconds.
+	MgnVpceId = Optional. If you are using a VPC Endpoint for MGN, you can specify the Endpoint ID + Suffix for the Endpoint connectivity test. Please enter the VPC Endpoint Id and suffix from the DNS names.
+	S3VpceId = Optional. If you are using a VPC Endpoint for S3, you can specify the Endpoint ID + Suffix for the Endpoint connectivity test. Please enter the VPC Endpoint Id and suffix from the DNS names.
+	ChecksType = Optional. Prerequisite or PostMigration or Replication. By default the module will run all checks.
 .OUTPUTS
 
 #>
 function Invoke-MGNToolkit {
+	[CmdletBinding()]
 	param (
 		[String]$Region = "us-east-1",
 		[IPAddress]$SpeedTestIP,
 		[String]$WriteOpsTimer = 20,
 		[String]$MgnVpceId,
 		[String]$S3VpceId,
-		[Switch]$GridView,
-		[Switch]$List
+		[ValidateScript({
+		$set = "Prerequisite", "PostMigration", "Replication", "ALL"
+		if ($_ -in $set) { return $true } # OK
+        throw "'$_' is not a valid ChecksType. Please try one of the following: '$($set -join ',')'"
+		})]
+		[String]$ChecksType = "ALL"
 	)
 
 	#Set the default file path and logs location, all errors should function as STOP errors for logging purposes
@@ -116,7 +120,9 @@ function Invoke-MGNToolkit {
 
 		Write-Output "Running all the tests can take a few minutes..."
 		#Set the output object
-		$Output = New-Object -TypeName "System.Collections.ArrayList"
+		$prerequisiteOutput = New-Object -TypeName "System.Collections.ArrayList"
+		$postMigrationOutput = New-Object -TypeName "System.Collections.ArrayList"
+		$replicationOutput = New-Object -TypeName "System.Collections.ArrayList"
 	}
 
 	process {
@@ -133,39 +139,53 @@ function Invoke-MGNToolkit {
 		$productType = (Get-CimInstance -ClassName Win32_OperatingSystem).ProductType
 		Write-Log -Message "The source machine product type is $productType"
 
-		# Calling each check in order
-		(Get-DomainControllerStatus) | Out-Null
-		(Get-AntivirusEnabled) | Out-Null
-		(Get-BitLockerStatus) | Out-Null
-		(Get-BootMode) | Out-Null
-		(Get-BootDiskSpace) | Out-Null
-		(Get-Authenticationmethod) | Out-Null
-		(Get-DotNETFramework) | Out-Null
-		(Get-FreeRAM) | Out-Null
-		(Get-TrustedRootCertificate) | Out-Null
-		(Get-SCandNET) | Out-Null
-		(Get-WMIServiceStatus) | Out-Null
-		(Get-ProxySetting) | Out-Null
-		(Get-NetworkInterfaceandIPCount) | Out-Null
-		(Test-EndpointsNetworkAccess -region $Region -mgnVpceId $MgnVpceId -s3VpceId $S3VpceId) | Out-Null
-		if ($SpeedTestIP) {
-			Write-Output "Please follow the following documentation to create the Speed Test instance before proceeding with the Bandwidth Test: https://docs.aws.amazon.com/mgn/latest/ug/Replication-Related-FAQ.html#perform-connectivity-bandwidth-test"
-			(Get-Bandwidth -SpeedTestIP $SpeedTestIP) | Out-Null
+		switch ($ChecksType) {
+			{$_ -eq "Prerequisite" -Or $_ -eq "ALL"} {
+				(Get-AntivirusEnabled) | Out-Null
+				(Get-BitLockerStatus) | Out-Null
+				(Get-BootDiskSpace) | Out-Null
+				(Get-DotNETFramework) | Out-Null
+				(Get-FreeRAM) | Out-Null
+				(Get-TrustedRootCertificate) | Out-Null
+				(Get-SCandNET) | Out-Null
+				(Get-WMIServiceStatus) | Out-Null
+				(Get-ProxySetting) | Out-Null
+				(Test-EndpointsNetworkAccess -region $Region -mgnVpceId $MgnVpceId -s3VpceId $S3VpceId) | Out-Null
+				Write-Output "============"
+				Write-Output "Prerequisite"
+				Write-Output "============"
+				$prerequisiteOutput | ForEach-Object { [PSCustomObject]$_ } | Format-Table -Wrap
+			}
+			{$_ -eq "PostMigration" -Or $_ -eq "ALL"} {
+				(Get-DomainControllerStatus) | Out-Null
+				(Get-BootMode) | Out-Null
+				(Get-Authenticationmethod) | Out-Null
+				(Get-NetworkInterfaceandIPCount) | Out-Null
+				Write-Output "=============="
+				Write-Output "Post Migration"
+				Write-Output "=============="
+				$postMigrationOutput | ForEach-Object { [PSCustomObject]$_ } | Format-Table -Wrap
+			}
+			{$_ -eq "Replication" -Or $_ -eq "ALL"} {
+				if ($SpeedTestIP) {
+					Write-Output "Please follow the following documentation to create the Speed Test instance before proceeding with the Bandwidth Test: https://docs.aws.amazon.com/mgn/latest/ug/Replication-Related-FAQ.html#perform-connectivity-bandwidth-test"
+					(Get-Bandwidth -SpeedTestIP $SpeedTestIP) | Out-Null
+				}
+				if ($WriteOpsTimer) {
+					(Get-DiskActivity -WriteOpsTimer $WriteOpsTimer) | Out-Null
+				}
+				Write-Output "==========="
+				Write-Output "Replication"
+				Write-Output "==========="
+				$replicationOutput | ForEach-Object { [PSCustomObject]$_ } | Format-Table -Wrap
+			}
+			default {
+				Write-Output "Unknown checks type"
+			}
 		}
-		if ($WriteOpsTimer) {
-			(Get-DiskActivity -WriteOpsTimer $WriteOpsTimer) | Out-Null
-		}
-		if ($List) {
-			$Output | ForEach-Object { [PSCustomObject]$_ } | Format-List
-		}
-		elseif ($GridView) {
-			$Output | ForEach-Object { [PSCustomObject]$_ } | Out-GridView -Title 'MGN ToolKit'
-		}
-		else {
-			$Output | ForEach-Object { [PSCustomObject]$_ } | Format-Table -Wrap
-		}
-		$Output | ForEach-Object { [PSCustomObject]$_ } | Format-List | Out-File -FilePath $OutputsDestination
-		$Output | Select-Object -Property Check, Value, Action | Export-Csv -Path $csvDestination -NoTypeInformation
+
+		$prerequisiteOutput + $postMigrationOutput + $replicationOutput | ForEach-Object { [PSCustomObject]$_ } | Format-List | Out-File -FilePath $OutputsDestination
+		$prerequisiteOutput + $postMigrationOutput + $replicationOutput | Select-Object -Property Check, Value, Action | Export-Csv -Path $csvDestination -NoTypeInformation
 	}
 	end {
 		Write-Log -Message "___________________________________________________________________"

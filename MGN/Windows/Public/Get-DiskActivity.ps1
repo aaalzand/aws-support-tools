@@ -56,6 +56,6 @@ Maximum (Mbits) = $maxMbits Mbps
     $value = "[RED]"
     Write-Log -Message "The check ""$check"" output is $value" -LogLevel "ERROR"
   }
-  $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
-  $Output.Add((Set-PSObjectResponse -Check "$check2" -Status "$value2" -Action "$Action2"))
+  $replicationOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+  $replicationOutput.Add((Set-PSObjectResponse -Check "$check2" -Status "$value2" -Action "$Action2"))
 }

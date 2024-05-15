@@ -95,5 +95,5 @@ Function Get-AntivirusEnabled {
         $value = "[YELLOW]"
         Write-Log -Message "The check ""$check"" output is $value" -LogLevel "ERROR"
     }
-    $Output.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
+    $prerequisiteOutput.Add((Set-PSObjectResponse -Check "$check" -Status "$value" -Action "$Action"))
 }
